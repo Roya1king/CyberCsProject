@@ -7,6 +7,10 @@ const Welcome = () => {
     <div className="relative min-h-[80vh] flex flex-col gap-10 items-center justify-start text-center px-4 py-10 overflow-hidden">
       {/* Background dotted globe and lines */}
       <div aria-hidden className="globe-dots" />
+      <div className="absolute top-4 left-4 hidden lg:block">
+        <img src="/cybersec.png" alt="logo" className="w-32 h-auto rounded-md" />
+      </div>
+
       <div className="w-full max-w-6xl flex justify-end">
         <Link
           to="/dashboard"
@@ -16,6 +20,7 @@ const Welcome = () => {
         </Link>
       </div>
       <div>
+      
         <h1 className="text-3xl md:text-5xl font-bold">Cyber Security Monitoring Console</h1>
         <p className="mt-3 text-muted-foreground max-w-3xl">
           A unified dashboard for real-time packet visibility, detection insights, policy enforcement, and network health.

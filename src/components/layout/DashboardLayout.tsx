@@ -9,8 +9,13 @@ const DashboardLayout = () => {
       <aside className="hidden md:flex md:w-64 shrink-0 rounded-xl border bg-card text-card-foreground shadow p-4 md:h-[calc(100vh-2rem)] md:sticky md:top-4">
         <div className="flex flex-col w-full">
           <div className="flex items-center justify-between mb-4">
-            <div className="text-lg font-semibold flex items-center gap-2"><Activity size={18}/> Security Console</div>
             <ThemeToggle/>
+          </div>
+          <div className="mb-4">
+          <img src="/cybersec.png" alt="logo" className="h-20 rounded-md" />
+          </div>
+          <div className="text-base font-semibold flex items-center gap-2 mb-3">
+            <Activity size={18}/> Security Console
           </div>
           <div className="text-xs uppercase text-muted-foreground mb-2">Overview</div>
           <nav className="flex flex-col gap-1 text-sm">
