@@ -1,19 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Cpu } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface BandwidthCardProps {
   used: number; // e.g., 120
   total: number; // e.g., 500
   unit?: string; // e.g., "Mbps"
+  className?: string;
 }
 
-const BandwidthCard = ({ used, total, unit = "Mbps" }: BandwidthCardProps) => {
+const BandwidthCard = ({ used, total, unit = "Mbps", className }: BandwidthCardProps) => {
   const percentage = Math.round((used / total) * 100);
 
   return (
-    <Card className="w-64">
+    <Card className={cn("w-full", className)}>
       <CardHeader className="flex items-center justify-between">
-        <CardTitle>Bandwidth</CardTitle>
+        <CardTitle>
+          <Link to="/dashboard/bandwidth" className="hover:underline">Bandwidth</Link>
+        </CardTitle>
         <Cpu className="text-gray-500" />
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center">

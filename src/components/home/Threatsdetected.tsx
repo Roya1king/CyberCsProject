@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ShieldAlert } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ThreatsDetected = () => {
   const threats = [
@@ -28,10 +29,12 @@ const ThreatsDetected = () => {
   };
 
   return (
-    <Card className="w-[30%]">
+    <Card className="w-full">
       <CardHeader className="flex items-center gap-2">
         <ShieldAlert className="text-red-500" />
-        <CardTitle>Threats Detected</CardTitle>
+        <CardTitle>
+          <Link to="/dashboard/threats" className="hover:underline">Threats Detected</Link>
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <div className="overflow-x-auto">

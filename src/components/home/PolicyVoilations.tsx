@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -29,10 +30,12 @@ const PolicyViolations = () => {
   };
 
   return (
-    <Card className="w-[40%]">
+    <Card className="w-full">
       <CardHeader className="flex items-center gap-2">
         <AlertTriangle className="text-red-500" />
-        <CardTitle>Policy Violations</CardTitle>
+        <CardTitle>
+          <Link to="/dashboard/policy-violations" className="hover:underline">Policy Violations</Link>
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <div className="overflow-x-auto">

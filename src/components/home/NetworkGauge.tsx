@@ -1,16 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Network } from "lucide-react";
-import { PieChart, Pie, Cell } from "recharts";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface NetworkGaugeProps {
   value: number; // 0 to 100
+  className?: string;
 }
 
-const NetworkGauge = ({ value }: NetworkGaugeProps) => {
-  const data = [
-    { name: "Used", value },
-    { name: "Remaining", value: 100 - value },
-  ];
+const NetworkGauge = ({ value, className }: NetworkGaugeProps) => {
 
   let color = "";
   let status = "";
@@ -26,29 +25,23 @@ const NetworkGauge = ({ value }: NetworkGaugeProps) => {
   }
 
   return (
-    <Card className="w-64">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Network Status</CardTitle>
+    <Card className={cn("w-full", className)}>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle>
+          <Link to="/dashboard/network" className="hover:underline">Network Status</Link>
+        </CardTitle>
         <Network className="text-gray-500" />
       </CardHeader>
-      <CardContent className="flex flex-col items-center">
-        <PieChart width={160} height={80}>
-          <Pie
-            startAngle={180}
-            endAngle={0}
-            data={data}
-            innerRadius={50}
-            outerRadius={70}
-            paddingAngle={5}
-            dataKey="value"
-          >
-            <Cell key="used" fill={color} />
-            <Cell key="remaining" fill="#e5e7eb" />
-          </Pie>
-        </PieChart>
-        <div className="mt-2 text-center">
-          <p className="text-xl font-semibold">{status}</p>
-          <p className="text-sm text-gray-500">{value}% Strength</p>
+      <CardContent className="flex flex-col gap-2">
+        <Progress value={value} />
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-muted-foreground">0%</span>
+          <span className="text-2xl md:text-3xl font-bold leading-none">{value}%</span>
+          <span className="text-muted-foreground">100%</span>
+        </div>
+        <div className="text-center">
+          <p className="text-sm font-semibold leading-tight">{status}</p>
+          <p className="text-xs text-muted-foreground leading-tight">Network strength</p>
         </div>
       </CardContent>
     </Card>
