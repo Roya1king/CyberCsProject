@@ -25,8 +25,8 @@ const LivePackets = () => {
   ];
 
   return (
-     <Link to="/live-packet-page" className="block">
-    <Card className="w-[30%]">
+     <Link to="/dashboard/live-packets" className="block">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Live Packets</CardTitle>
       </CardHeader>

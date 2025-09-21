@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 // import { ArrowUp } from "lucide-react";
 
 interface TopTalkersProps {
@@ -17,9 +18,11 @@ const TopTalkers = ({
   const maxPackets = Math.max(...data.map(d => d.packets));
 
   return (
-    <Card className="w-[30%]">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>Top Talkers</CardTitle>
+        <CardTitle>
+          <Link to="/dashboard/top-talkers" className="hover:underline">Top Talkers</Link>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
