@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -14,51 +15,84 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface Packet {
+  time: string;
+  src: string;
+  dest: string;
+  protocol: string;
+  length: number;
+  info: string;
+}
+
 const LivePackets = () => {
-  // Static dummy data
-  const packets = [
-    { time: "12:01:02", src: "192.168.0.1", dest: "192.168.0.5", protocol: "TCP", length: 1500, info: "ACK" },
-    { time: "12:01:03", src: "192.168.0.5", dest: "192.168.0.1", protocol: "TCP", length: 1500, info: "SYN" },
-    { time: "12:01:05", src: "192.168.0.2", dest: "8.8.8.8", protocol: "ICMP", length: 64, info: "Ping Request" },
-    { time: "12:01:06", src: "8.8.8.8", dest: "192.168.0.2", protocol: "ICMP", length: 64, info: "Ping Reply" },
-    { time: "12:01:08", src: "192.168.0.3", dest: "192.168.0.4", protocol: "UDP", length: 512, info: "Data" },
-  ];
+  const [packets, setPackets] = useState<Packet[]>([]);
+
+  useEffect(() => {
+    // Connect WebSocket (replace with your server URL)
+    const ws = new WebSocket("ws://localhost:8080");
+
+    ws.onmessage = (event) => {
+      try {
+        const pkt = JSON.parse(event.data);
+
+        // Map the incoming data to the Packet structure
+        const newPkt: Packet = {
+          time: new Date().toLocaleTimeString(),
+          src: pkt.source_ip,
+          dest: pkt.destination_ip,
+          protocol: pkt.protocol,
+          length: pkt.packet_length,
+          info: "N/A", // Placeholder for additional info
+        };
+
+        // Keep only the last 20 packets
+        setPackets((prev) => [...prev.slice(-19), newPkt]);
+      } catch (err) {
+        console.error("Invalid packet:", err);
+      }
+    };
+
+    ws.onopen = () => console.log("WebSocket connected ✅");
+    ws.onclose = () => console.log("WebSocket disconnected ❌");
+
+    return () => ws.close();
+  }, []);
 
   return (
-     <Link to="/dashboard/live-packets" className="block">
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Live Packets</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Time</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Destination</TableHead>
-                <TableHead>Protocol</TableHead>
-                <TableHead>Length</TableHead>
-                <TableHead>Info</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {packets.map((pkt, idx) => (
-                <TableRow key={idx} className="text-sm">
-                  <TableCell>{pkt.time}</TableCell>
-                  <TableCell>{pkt.src}</TableCell>
-                  <TableCell>{pkt.dest}</TableCell>
-                  <TableCell>{pkt.protocol}</TableCell>
-                  <TableCell>{pkt.length}</TableCell>
-                  <TableCell>{pkt.info}</TableCell>
+    <Link to="/dashboard/live-packets" className="block">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Live Packets</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Time</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Destination</TableHead>
+                  <TableHead>Protocol</TableHead>
+                  <TableHead>Length</TableHead>
+                  <TableHead>Info</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+              </TableHeader>
+              <TableBody>
+                {packets.map((pkt, idx) => (
+                  <TableRow key={idx} className="text-sm">
+                    <TableCell>{pkt.time}</TableCell>
+                    <TableCell>{pkt.src}</TableCell>
+                    <TableCell>{pkt.dest}</TableCell>
+                    <TableCell>{pkt.protocol}</TableCell>
+                    <TableCell>{pkt.length}</TableCell>
+                    <TableCell>{pkt.info}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 };
