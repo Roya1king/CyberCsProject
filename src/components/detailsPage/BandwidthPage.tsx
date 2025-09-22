@@ -10,7 +10,8 @@ interface BandwidthCardProps {
   className?: string;
 }
 
-const BandwidthPage = ({ used, total, unit = "Mbps", className }: BandwidthCardProps) => {
+const BandwidthPage = ({ total, className }: BandwidthCardProps) => {
+  const used = 1
   const percentage = Math.round((used / total) * 100);
 
   return (
@@ -22,8 +23,8 @@ const BandwidthPage = ({ used, total, unit = "Mbps", className }: BandwidthCardP
         <Cpu className="text-gray-500" />
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center">
-        <p className="text-4xl font-bold">{used} {unit}</p>
-        <p className="text-sm text-gray-500 mt-1">of {total} {unit} total</p>
+        <p className="text-4xl font-bold">{used} Mbps</p>
+        <p className="text-sm text-gray-500 mt-1">of {total} Mbps total</p>
         <div className="w-full h-2 bg-gray-200 rounded-full mt-3">
           <div
             className="h-2 rounded-full bg-blue-500"

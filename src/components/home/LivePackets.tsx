@@ -29,7 +29,7 @@ const LivePackets = () => {
 
   useEffect(() => {
     // Connect WebSocket (replace with your server URL)
-    const ws = new WebSocket("ws://localhost:8080");
+    const ws = new WebSocket("ws://localhost:8000/ws/live-packets/");
 
     ws.onmessage = (event) => {
       try {
@@ -46,7 +46,7 @@ const LivePackets = () => {
         };
 
         // Keep only the last 20 packets
-        setPackets((prev) => [...prev.slice(-19), newPkt]);
+        setPackets((prev) => [...prev.slice(-99), newPkt]);
       } catch (err) {
         console.error("Invalid packet:", err);
       }

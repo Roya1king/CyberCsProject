@@ -16,7 +16,7 @@ const Hero = () => {
           <div className="h-56 overflow-y-auto"><LivePackets/></div>
         </div>
         <div className="col-span-12 md:col-span-6 order-2 md:order-none grid gap-3 grid-cols-1 md:grid-cols-2">
-          <BandwidthCard used={120} total={500} unit="Mbps" className="h-56 overflow-hidden"/>
+          <BandwidthCard total={10} className="h-56 overflow-hidden"/>
           <NetworkGauge value={57} className="h-56 overflow-visible"/>
         </div>
 

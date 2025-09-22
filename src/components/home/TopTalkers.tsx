@@ -24,7 +24,7 @@ const TopTalkers = () => {
     // Fetch top talkers data from the API
     const fetchTopTalkers = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/top-talkers/${timeInMinutes}`);
+        const response = await fetch(`http://localhost:8000/api/top-talkers/${timeInMinutes}`);
         const result = await response.json();
 
         // Map the API response to the expected format
@@ -32,7 +32,7 @@ const TopTalkers = () => {
           ip: item.source_ip,
           packets: item.total_packets,
         }));
-
+        console.log(formattedData)
         setData(formattedData);
       } catch (error) {
         console.error("Failed to fetch top talkers:", error);

@@ -23,7 +23,7 @@ const BandwidthCard = ({ total, className }: BandwidthCardProps) => {
 
   useEffect(() => {
     // Connect WebSocket (replace with your server URL)
-    const ws = new WebSocket("ws://localhost:8080");
+    const ws = new WebSocket("ws://localhost:8000/ws/live-packets/");
 
     ws.onmessage = (event) => {
       try {
@@ -46,17 +46,18 @@ const BandwidthCard = ({ total, className }: BandwidthCardProps) => {
     // Update bandwidth every minute
     const interval = setInterval(() => {
       // Calculate bandwidth in Mbps
-      oldBandwidth.current = (newLength.current / 60 / 1024 / 1024) * 8; // Convert bytes to Mbps
+      oldBandwidth.current = (newLength.current / 1024 / 1024) * 8; // Convert bytes to Mbps
       setBandwidth(oldBandwidth.current);
 
       // Reset the total length for the next minute
       newLength.current = 0;
-    }, 60 * 1000); // Every 1 minute
+    }, 1000); // Every 1 minute
 
     return () => clearInterval(interval);
   }, []);
 
   const percentage = Math.round((bandwidth / total) * 100);
+  console.log(percentage);
 
   return (
     <Card className={cn("w-full", className)}>

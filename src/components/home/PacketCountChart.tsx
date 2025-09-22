@@ -22,7 +22,7 @@ const PacketCountChart = ({ className }: PacketCountProps) => {
 
   useEffect(() => {
     // Connect WebSocket (replace with your server URL)
-    const ws = new WebSocket("ws://localhost:8080");
+    const ws = new WebSocket("ws://localhost:8000/ws/live-packets/");
 
     ws.onmessage = (event) => {
       try {
@@ -58,7 +58,7 @@ const PacketCountChart = ({ className }: PacketCountProps) => {
         ...prev.slice(-9), // Keep the last 9 data points (10 total)
         { time: now.toLocaleTimeString(), count: oldCnt.current },
       ]);
-    }, 60 * 1000); // Every 1 minute
+    },  1000); // Every 1 minute
 
     return () => clearInterval(interval);
   }, []);
