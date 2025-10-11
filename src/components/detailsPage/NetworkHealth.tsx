@@ -91,7 +91,7 @@ const NetworkHealth = (): JSX.Element => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ip: ipAddress }),
+        body: JSON.stringify({ ip_address : ipAddress }),
       });
 
       if (!response.ok) {
