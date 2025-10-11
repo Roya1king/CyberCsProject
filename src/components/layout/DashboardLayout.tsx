@@ -25,13 +25,15 @@ const DashboardLayout = () => {
           <div className="text-xs uppercase text-muted-foreground mt-4 mb-2">Analytics</div>
           <nav className="flex flex-col gap-1 text-sm">
             <NavLink to="/dashboard/live-packets" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><TableIcon size={16}/> Live Packets</NavLink>
+            <NavLink to="/dashboard/network-visualization" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><HeartPulse size={16}/> Network Visualization</NavLink>
+            <NavLink to="/dashboard/network-health" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><HeartPulse size={16}/> Network Health</NavLink>
             <NavLink to="/dashboard/threats" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><ShieldAlert size={16}/> Threats</NavLink>
             <NavLink to="/dashboard/policy-violations" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><Network size={16}/> Policy Violations</NavLink>
             <NavLink to="/dashboard/top-talkers" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><LineChart size={16}/> Top Talkers</NavLink>
             <NavLink to="/dashboard/bandwidth" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><Cpu size={16}/> Bandwidth</NavLink>
             <NavLink to="/dashboard/network" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><Network size={16}/> Network Status</NavLink>
             <NavLink to="/dashboard/packet-count" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><LineChart size={16}/> Packet Count</NavLink>
-            <NavLink to="/dashboard/network-health" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><HeartPulse size={16}/> Network Health</NavLink>
+           
           </nav>
           <div className="mt-auto pt-4">
             <div className="text-xs uppercase text-muted-foreground mb-2">Settings</div>

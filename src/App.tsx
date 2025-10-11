@@ -12,6 +12,7 @@ import TopTalkersPage from './components/detailsPage/TopTalkersPage'
 import ThreatsPage from './components/detailsPage/ThreatsPage'
 import Welcome from './components/home/Welcome'
 import NetworkHealth from './components/detailsPage/NetworkHealth'
+import Visualization from "./components/detailsPage/Visualization"
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="top-talkers" element={<TopTalkersPage/>} />
         <Route path="threats" element={<ThreatsPage/>} />
         <Route path="network-health" element={<NetworkHealth/>} />
+        <Route path="network-visualization" element={<Visualization/>} />
       </Route>
     </Routes>
     </BrowserRouter>
