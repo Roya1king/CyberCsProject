@@ -1,69 +1,74 @@
-# React + TypeScript + Vite
+# 🔐 Cyber Security Dashboard – Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![npm](https://img.shields.io/badge/npm-v9.0.0-red?logo=npm)  
+![React](https://img.shields.io/badge/React-18-blue?logo=react)  
+![Vite](https://img.shields.io/badge/Vite-frontend-yellow?logo=vite)  
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.0-38B2AC?logo=tailwind-css)  
+![shadcn/ui](https://img.shields.io/badge/shadcn-ui-black?logo=vercel)  
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)  
+![WebSockets](https://img.shields.io/badge/WebSockets-Live-green?logo=socketdotio)
 
-Currently, two official plugins are available:
+This repository contains the **frontend code** for a real-time **Network Traffic Monitoring and Incident Response Dashboard**.  
+The application provides an **intuitive, responsive, and dynamic UI** to visualize network activity, detect anomalies, and monitor network health in real-time.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Key Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **📊 Real-time Network Visualization**  
+  Interactive charts and tables to monitor live traffic and alerts.  
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **💡 "Top Talker" Identification**  
+  Detect and analyze the most active hosts on the network using Suricata logs.  
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **🌐 Network Health Monitoring**  
+  Measure key metrics like **Round-Trip Time (RTT)** and **Time-To-Live (TTL)** via Ping utility.  
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **⚠️ Policy Violation Alerts**  
+  Custom Suricata rule sets to flag unauthorized ports, suspicious protocols, and access violations.  
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **🛡️ Intrusion Detection**  
+  Integration with **Suricata IDS/NSM** engine for deep packet inspection and real-time intrusion detection.  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Tech Stack
+
+- **Framework:** [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)  
+- **Language:** TypeScript  
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)  
+- **Data Fetching:** Fetch API  
+- **Real-time Communication:** WebSockets  
+
+---
+
+## ⚡ Getting Started
+
+Follow these steps to run the project locally:
+
+### ✅ Prerequisites
+- [Node.js (LTS)](https://nodejs.org/en/)  
+- npm or yarn package manager  
+
+### 📥 Installation
+Clone the repository:
+```bash
+git clone https://github.com/Kuldeepagrahari/CyberSecurityClient.git
+cd CyberSecurityClient
+
+Install dependencies:
+npm install
+# or
+yarn install
+
+▶️ Running the Application
+
+Start the dev server:
+npm run dev
+# or
+yarn dev
+
+
+Open your browser at:
+👉 http://localhost:5173
+ (default Vite port)
