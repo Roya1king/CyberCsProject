@@ -11,6 +11,7 @@ import PolicyViolationsPage from './components/detailsPage/PolicyViolationsPage'
 import TopTalkersPage from './components/detailsPage/TopTalkersPage'
 import ThreatsPage from './components/detailsPage/ThreatsPage'
 import Welcome from './components/home/Welcome'
+import NetworkHealth from './components/detailsPage/NetworkHealth'
 
 function App() {
 
@@ -22,12 +23,13 @@ function App() {
       <Route path="/dashboard" element={<DashboardLayout/>}>
         <Route index element={<Hero/>} />
         <Route path="live-packets" element={<LivePacketsPage/>} />
-        <Route path="bandwidth" element={<BandwidthPage total={10} />} />
+        <Route path="bandwidth" element={<BandwidthPage total={100} />} />
         <Route path="network" element={<NetworkStatusPage/>} />
         <Route path="packet-count" element={<PacketCountPage/>} />
         <Route path="policy-violations" element={<PolicyViolationsPage/>} />
         <Route path="top-talkers" element={<TopTalkersPage/>} />
         <Route path="threats" element={<ThreatsPage/>} />
+        <Route path="network-health" element={<NetworkHealth/>} />
       </Route>
     </Routes>
     </BrowserRouter>

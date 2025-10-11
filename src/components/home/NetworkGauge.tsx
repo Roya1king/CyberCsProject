@@ -32,7 +32,7 @@ const NetworkGauge = ({ value, className }: NetworkGaugeProps) => {
         </CardTitle>
         <Network className="text-gray-500" />
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      <CardContent className="flex flex-col gap-8">
         <Progress value={value} />
         <div className="flex items-center justify-between text-xs">
           <span className="text-muted-foreground">0%</span>

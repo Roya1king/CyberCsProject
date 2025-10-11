@@ -1,7 +1,7 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { NavLink, Outlet } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
-import { Activity, ShieldAlert, Network, Cpu, LineChart, Table as TableIcon, Settings, LayoutDashboard } from "lucide-react";
+import { Activity, ShieldAlert, Network, Cpu, LineChart, HeartPulse, Table as TableIcon, Settings, LayoutDashboard } from "lucide-react";
 
 const DashboardLayout = () => {
   return (
@@ -11,11 +11,11 @@ const DashboardLayout = () => {
           <div className="flex items-center justify-between mb-4">
             <ThemeToggle/>
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
           <img src="/cybersec.png" alt="logo" className="h-20 rounded-md" />
-          </div>
+          </div> */}
           <div className="text-base font-semibold flex items-center gap-2 mb-3">
-            <Activity size={18}/> Security Console
+            <Activity size={18}/> C Y B E R
           </div>
           <div className="text-xs uppercase text-muted-foreground mb-2">Overview</div>
           <nav className="flex flex-col gap-1 text-sm">
@@ -31,6 +31,7 @@ const DashboardLayout = () => {
             <NavLink to="/dashboard/bandwidth" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><Cpu size={16}/> Bandwidth</NavLink>
             <NavLink to="/dashboard/network" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><Network size={16}/> Network Status</NavLink>
             <NavLink to="/dashboard/packet-count" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><LineChart size={16}/> Packet Count</NavLink>
+            <NavLink to="/dashboard/network-health" className={({isActive})=>`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted ${isActive? 'bg-muted text-foreground' : 'text-muted-foreground'}`}><HeartPulse size={16}/> Network Health</NavLink>
           </nav>
           <div className="mt-auto pt-4">
             <div className="text-xs uppercase text-muted-foreground mb-2">Settings</div>
