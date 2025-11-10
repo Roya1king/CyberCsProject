@@ -1,155 +1,209 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { cn } from "@/lib/utils";
-import { useState, useEffect, useRef, useMemo } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Packet {
-  source_ip: string;
-  destination_ip: string;
-  packet_length: number;
+  time: string;
+  src: string;
+  dest: string;
   protocol: string;
+  length: number;
 }
 
-interface PacketCountProps {
-  className?: string;
-}
+// IPv4 validation helper
+const isValidIP = (ip: string): boolean => {
+  const ipv4Pattern =
+    /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+  return ipv4Pattern.test(ip);
+};
 
-const PacketCountChart = ({ className }: PacketCountProps) => {
-  const [historyData, setHistoryData] = useState<{ time: string; count: number }[]>([]);
-  const [viewOffset, setViewOffset] = useState(0);
-  const [currentSecondCount, setCurrentSecondCount] = useState(0);
-  const liveCounter = useRef(0);
+const LivePackets = () => {
+  const [packets, setPackets] = useState<Packet[]>([]);
+  const [protocolFilter, setProtocolFilter] = useState<string>("All Protocols");
+  const [srcFilter, setSrcFilter] = useState<string>("");
+  const [destFilter, setDestFilter] = useState<string>("");
+  const [srcError, setSrcError] = useState<string>("");
+  const [destError, setDestError] = useState<string>("");
 
-  const WINDOW_SIZE = 10; // number of visible bars at a time
-
-  // --- WebSocket Connection ---
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/ws/live-packets/");
 
     ws.onmessage = (event) => {
       try {
-        const pkt: Packet = JSON.parse(event.data);
-        if (pkt.packet_length) {
-          liveCounter.current += 1;
-          setCurrentSecondCount(liveCounter.current);
-        }
+        const pkt = JSON.parse(event.data);
+        const newPkt: Packet = {
+          time: new Date().toLocaleTimeString(),
+          src: pkt.source_ip,
+          dest: pkt.destination_ip,
+          protocol: pkt.protocol,
+          length: pkt.packet_length,
+        };
+        setPackets((prev) => [...prev.slice(-99), newPkt]);
       } catch (err) {
         console.error("Invalid packet:", err);
       }
     };
 
-    ws.onopen = () => console.log("PacketCountChart: WebSocket connected ✅");
-    ws.onclose = () => console.log("PacketCountChart: WebSocket disconnected ❌");
+    ws.onopen = () => console.log("WebSocket connected ✅");
+    ws.onclose = () => console.log("WebSocket disconnected ❌");
+
     return () => ws.close();
   }, []);
 
-  // --- Update data every second ---
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const newPoint = {
-        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
-        count: liveCounter.current,
-      };
+  const handleSrcChange = (value: string) => {
+    setSrcFilter(value);
+    setSrcError(value && !isValidIP(value) ? "Invalid IP" : "");
+  };
+  const handleDestChange = (value: string) => {
+    setDestFilter(value);
+    setDestError(value && !isValidIP(value) ? "Invalid IP" : "");
+  };
 
-      liveCounter.current = 0; // reset after logging
+  const filteredPackets = useMemo(() => {
+    if (srcError || destError) return [];
 
-      setHistoryData((prev) => {
-        const updated = [...prev, newPoint];
-        return updated.length > 300 ? updated.slice(-300) : updated; // keep ~5 minutes of data
-      });
+    return packets.filter((pkt) => {
+      const protoMatch =
+        protocolFilter === "All Protocols" ||
+        pkt.protocol.toLowerCase() === protocolFilter.toLowerCase();
+      const srcMatch = srcFilter === "" || pkt.src.includes(srcFilter);
+      const destMatch = destFilter === "" || pkt.dest.includes(destFilter);
+      return protoMatch && srcMatch && destMatch;
+    });
+  }, [packets, protocolFilter, srcFilter, destFilter, srcError, destError]);
 
-      // Auto-scroll only if user is at live edge
-      if (viewOffset + WINDOW_SIZE >= historyData.length) {
-        setViewOffset(Math.max(0, historyData.length - WINDOW_SIZE));
-      }
-
-      setCurrentSecondCount(0);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [viewOffset, historyData.length]);
-
-  // --- Data slice for visible window ---
-  const visibleData = useMemo(() => {
-    return historyData.slice(viewOffset, viewOffset + WINDOW_SIZE);
-  }, [historyData, viewOffset]);
-
-  // --- Handlers for navigation ---
-  const handlePrev = () => setViewOffset((prev) => Math.max(0, prev - 1));
-  const handleNext = () =>
-    setViewOffset((prev) => Math.min(historyData.length - WINDOW_SIZE, prev + 1));
-
-  const isAtStart = viewOffset === 0;
-  const isAtEnd = viewOffset + WINDOW_SIZE >= historyData.length;
+  const protocolOptions = useMemo(() => {
+    const unique = Array.from(new Set(packets.map((p) => p.protocol))).sort();
+    return ["All Protocols", ...unique];
+  }, [packets]);
 
   return (
-    <Card className={cn("w-full min-h-[420px] p-4", className)}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-base font-semibold flex items-center gap-2">
-          <Link to="/dashboard/packet-count" className="hover:underline">
-            Packet Count (per sec)
-          </Link>
-        </CardTitle>
-        <span className="text-3xl font-bold">{currentSecondCount}</span>
+    <Card className="w-full">
+      <CardHeader>
+        {/* Only heading is clickable */}
+        <Link to="/dashboard/live-packets">
+          <CardTitle className="hover:text-blue-600 hover:underline cursor-pointer">
+            Live Packets
+          </CardTitle>
+        </Link>
       </CardHeader>
 
-      <CardContent>
-        <div className="flex items-center justify-between mb-2">
-          {/* Navigation buttons */}
-          <button
-            onClick={handlePrev}
-            disabled={isAtStart}
-            className={`p-2 rounded-md border ${
-              isAtStart
-                ? "opacity-40 cursor-not-allowed"
-                : "hover:bg-muted transition-colors"
-            }`}
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Time</TableHead>
 
-          <span className="text-sm text-muted-foreground">
-            Viewing:{" "}
-            {visibleData.length > 0
-              ? `${visibleData[0].time} → ${
-                  visibleData[visibleData.length - 1].time
-                }`
-              : "---"}
-          </span>
+                {/* Source IP Filter */}
+                <TableHead className="w-[180px]">
+                  <Input
+                    placeholder="Source IP"
+                    value={srcFilter}
+                    onChange={(e) => handleSrcChange(e.target.value)}
+                    className={`h-8 text-xs ${
+                      srcError
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }`}
+                  />
+                  {srcError && (
+                    <span className="text-[10px] text-red-500">{srcError}</span>
+                  )}
+                </TableHead>
 
-          <button
-            onClick={handleNext}
-            disabled={isAtEnd}
-            className={`p-2 rounded-md border ${
-              isAtEnd
-                ? "opacity-40 cursor-not-allowed"
-                : "hover:bg-muted transition-colors"
-            }`}
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+                {/* Destination IP Filter */}
+                <TableHead className="w-[180px]">
+                  <Input
+                    placeholder="Destination IP"
+                    value={destFilter}
+                    onChange={(e) => handleDestChange(e.target.value)}
+                    className={`h-8 text-xs ${
+                      destError
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }`}
+                  />
+                  {destError && (
+                    <span className="text-[10px] text-red-500">
+                      {destError}
+                    </span>
+                  )}
+                </TableHead>
 
-        {/* Bar Chart */}
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={visibleData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <XAxis dataKey="time" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} />
-              <Tooltip
-                labelFormatter={(label) => `Time: ${label}`}
-                formatter={(value) => [`${value} Packets`, "Count"]}
-              />
-              <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+                {/* Protocol Dropdown */}
+                <TableHead className="w-[140px]">
+                  <Select
+                    value={protocolFilter}
+                    onValueChange={setProtocolFilter}
+                  >
+                    <SelectTrigger className="h-8 text-xs">
+                      <SelectValue placeholder="Protocol" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {protocolOptions.map((proto) => (
+                        <SelectItem key={proto} value={proto}>
+                          {proto}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableHead>
+
+                <TableHead>Length</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {filteredPackets.length > 0 ? (
+                filteredPackets.map((pkt, idx) => (
+                  <TableRow key={idx} className="text-sm">
+                    <TableCell>{pkt.time}</TableCell>
+                    <TableCell>{pkt.src}</TableCell>
+                    <TableCell>{pkt.dest}</TableCell>
+                    <TableCell>{pkt.protocol}</TableCell>
+                    <TableCell>{pkt.length}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-gray-500 py-4"
+                  >
+                    {srcError || destError
+                      ? "Invalid IP entered — please correct it."
+                      : "No packets match the selected filters."}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
     </Card>
   );
 };
 
-export default PacketCountChart;
+export default LivePackets;
