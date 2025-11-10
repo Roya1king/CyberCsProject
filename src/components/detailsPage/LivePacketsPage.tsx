@@ -22,13 +22,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// --- UPDATED INTERFACE ---
 interface Packet {
   time: string;
   src: string;
+  srcPort: number | null; // Added
   dest: string;
-  protocol: string;
+  destPort: number | null; // Added
+  protocol: string | null; // Can be null
   length: number;
 }
+// --- END UPDATE ---
 
 // IPv4 validation helper
 const isValidIP = (ip: string): boolean => {
@@ -51,13 +55,19 @@ const LivePacketsPage = () => {
     ws.onmessage = (event) => {
       try {
         const pkt = JSON.parse(event.data);
+        
+        // --- UPDATED PACKET CREATION ---
         const newPkt: Packet = {
           time: new Date().toLocaleTimeString(),
           src: pkt.source_ip,
+          srcPort: pkt.source_port, // Added
           dest: pkt.destination_ip,
+          destPort: pkt.destination_port, // Added
           protocol: pkt.protocol,
           length: pkt.packet_length,
         };
+        // --- END UPDATE ---
+
         setPackets((prev) => [...prev.slice(-99), newPkt]);
       } catch (err) {
         console.error("Invalid packet:", err);
@@ -84,9 +94,13 @@ const LivePacketsPage = () => {
     if (srcError || destError) return [];
 
     return packets.filter((pkt) => {
+      // --- UPDATED PROTOCOL MATCH TO BE NULL-SAFE ---
       const protoMatch =
         protocolFilter === "All Protocols" ||
-        pkt.protocol.toLowerCase() === protocolFilter.toLowerCase();
+        (pkt.protocol &&
+          pkt.protocol.toLowerCase() === protocolFilter.toLowerCase());
+      
+      // This logic remains the same, as it filters on the IP (pkt.src)
       const srcMatch = srcFilter === "" || pkt.src.includes(srcFilter);
       const destMatch = destFilter === "" || pkt.dest.includes(destFilter);
       return protoMatch && srcMatch && destMatch;
@@ -94,7 +108,10 @@ const LivePacketsPage = () => {
   }, [packets, protocolFilter, srcFilter, destFilter, srcError, destError]);
 
   const protocolOptions = useMemo(() => {
-    const unique = Array.from(new Set(packets.map((p) => p.protocol))).sort();
+    // --- UPDATED TO FILTER OUT NULL/UNDEFINED PROTOCOLS ---
+    const unique = Array.from(
+      new Set(packets.map((p) => p.protocol).filter(Boolean))
+    ).sort() as string[];
     return ["All Protocols", ...unique];
   }, [packets]);
 
@@ -113,8 +130,6 @@ const LivePacketsPage = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Time</TableHead>
-
-                  {/* Source IP Filter */}
                   <TableHead className="w-[180px]">
                     <Input
                       placeholder="Source IP"
@@ -128,8 +143,7 @@ const LivePacketsPage = () => {
                       <span className="text-[10px] text-red-500">{srcError}</span>
                     )}
                   </TableHead>
-
-                  {/* Destination IP Filter */}
+                  <TableHead>Source Port</TableHead>
                   <TableHead className="w-[180px]">
                     <Input
                       placeholder="Destination IP"
@@ -145,8 +159,7 @@ const LivePacketsPage = () => {
                       <span className="text-[10px] text-red-500">{destError}</span>
                     )}
                   </TableHead>
-
-                  {/* Protocol Dropdown */}
+                  <TableHead>Destination Port</TableHead>
                   <TableHead className="w-[140px]">
                     <Select
                       value={protocolFilter}
@@ -164,7 +177,6 @@ const LivePacketsPage = () => {
                       </SelectContent>
                     </Select>
                   </TableHead>
-
                   <TableHead>Length</TableHead>
                 </TableRow>
               </TableHeader>
@@ -174,16 +186,23 @@ const LivePacketsPage = () => {
                   filteredPackets.map((pkt, idx) => (
                     <TableRow key={idx} className="text-sm">
                       <TableCell>{pkt.time}</TableCell>
+                      
+                      {/* --- UPDATED CELL DISPLAY --- */}
                       <TableCell>{pkt.src}</TableCell>
+                      <TableCell>{pkt.srcPort ?? "N/A"}</TableCell>
                       <TableCell>{pkt.dest}</TableCell>
-                      <TableCell>{pkt.protocol}</TableCell>
+                      <TableCell>{pkt.destPort ?? "N/A"}</TableCell>
+                      {/* --- END UPDATE --- */}
+                      
+                      <TableCell>{pkt.protocol || "N/A"}</TableCell>
                       <TableCell>{pkt.length}</TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      // --- FIXED COLSPAN (WAS 6, SHOULD BE 5) ---
+                      colSpan={7}
                       className="text-center text-gray-500 py-4"
                     >
                       {srcError || destError
