@@ -29,8 +29,20 @@ const PolicyViolations = () => {
     }
   };
 
+  const APIdata = async () => {
+    try {
+      const response = await fetch("ws://localhost:8000/api/security-alerts")
+      if(!response) return
+      const jsonData = await response.json()
+      console.log(jsonData)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  APIdata()
+
   return (
-    <Card className="w-full">
+    <Card className="w-full mt-100">
       <CardHeader className="flex items-center gap-2">
         <AlertTriangle className="text-red-500" />
         <CardTitle>

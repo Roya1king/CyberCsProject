@@ -29,7 +29,7 @@ const ThreatsDetected = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full mt-100">
       <CardHeader className="flex items-center gap-2">
         <ShieldAlert className="text-red-500" />
         <CardTitle>
