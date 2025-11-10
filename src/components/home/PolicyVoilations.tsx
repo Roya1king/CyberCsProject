@@ -110,7 +110,6 @@ const PolicyViolations: React.FC = () => {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data from API
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
@@ -126,13 +125,10 @@ const PolicyViolations: React.FC = () => {
     };
 
     fetchAlerts();
-
-    // Optional: auto-refresh every 10 seconds
     const interval = setInterval(fetchAlerts, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  // Format date/time
   const formatDate = (timestamp: string) => {
     const date = new Date(timestamp);
     return date.toLocaleString("en-IN", {
@@ -143,7 +139,6 @@ const PolicyViolations: React.FC = () => {
     });
   };
 
-  // Severity color mapping
   const severityColor = (sev: number) => {
     switch (sev) {
       case 1:
@@ -188,8 +183,10 @@ const PolicyViolations: React.FC = () => {
                 <TableHead className="text-gray-400">Signature</TableHead>
                 <TableHead className="text-gray-400">Protocol</TableHead>
                 <TableHead className="text-gray-400">Severity</TableHead>
-                <TableHead className="text-gray-400">Source</TableHead>
-                <TableHead className="text-gray-400">Destination</TableHead>
+                <TableHead className="text-gray-400">Source IP</TableHead>
+                <TableHead className="text-gray-400">Source Port</TableHead>
+                <TableHead className="text-gray-400">Destination IP</TableHead>
+                <TableHead className="text-gray-400">Destination Port</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -219,13 +216,13 @@ const PolicyViolations: React.FC = () => {
                         : "Low"}
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-gray-300">{alert.src_ip}</TableCell>
                   <TableCell className="text-gray-300">
-                    {alert.src_ip}
-                    {alert.src_port && `:${alert.src_port}`}
+                    {alert.src_port ?? "—"}
                   </TableCell>
+                  <TableCell className="text-gray-300">{alert.dest_ip}</TableCell>
                   <TableCell className="text-gray-300">
-                    {alert.dest_ip}
-                    {alert.dest_port && `:${alert.dest_port}`}
+                    {alert.dest_port ?? "—"}
                   </TableCell>
                 </TableRow>
               ))}
